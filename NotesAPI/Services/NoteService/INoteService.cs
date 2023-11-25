@@ -1,11 +1,13 @@
 ﻿using NotesAPI.Dtos.Note;
-using NotesAPI.Models;
 
 namespace NotesAPI.Services.NoteService
 {
-    public interface INoteService
+	public interface INoteService
     {
-        Task<List<GetNoteDto>> GetAllNotes();
-        Task<GetNoteDto> SubmitNote(CreateNoteDto newNote);
+        Task<GetNoteDto> GetNoteById(int id);
+        Task<List<GetNoteForListDto>> GetAllNotes();
+        Task<GetNoteDto> CreateNote(CreateNoteDto newNote);
+        Task<GetNoteDto> UpdateNote(UpdateNoteDto editedNote);
+        Task DeleteNote(int id);
     }
 }

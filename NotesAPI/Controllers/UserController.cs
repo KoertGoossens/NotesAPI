@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using NotesAPI.Models;
 using NotesAPI.Services.UserService;
-using System.Security.Claims;
 
 namespace NotesAPI.Controllers
 {
-    [Route("[controller]")]
+	[Route("[controller]")]
 	[ApiController]
 	public class UserController : ControllerBase
 	{

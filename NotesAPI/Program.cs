@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using NotesAPI.Data;
 using NotesAPI.Services.AuthService;
 using NotesAPI.Services.NoteService;
 using NotesAPI.Services.UserService;
+using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
 namespace NotesAPI
@@ -19,7 +21,20 @@ namespace NotesAPI
 
 			builder.Services.AddControllers();
 			builder.Services.AddEndpointsApiExplorer();
-			builder.Services.AddSwaggerGen();
+
+			builder.Services.AddSwaggerGen(options =>
+			{
+				options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+				{
+					Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+					In = ParameterLocation.Header,
+					Name = "Authorization",
+					Type = SecuritySchemeType.ApiKey
+				});
+
+				options.OperationFilter<SecurityRequirementsOperationFilter>();
+			});
+
 			builder.Services.AddHttpContextAccessor();
 			builder.Services.AddAutoMapper(typeof(Program).Assembly);
 

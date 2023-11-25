@@ -12,6 +12,7 @@ namespace NotesAPI
 			CreateMap<User, GetUserDto>();
 
 			CreateMap<Note, GetNoteDto>();
+			CreateMap<Note, GetNoteForListDto>();
 			CreateMap<CreateNoteDto, Note>();
 		}
 	}
