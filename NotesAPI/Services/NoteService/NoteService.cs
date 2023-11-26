@@ -1,33 +1,30 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using NotesAPI.Data;
 using NotesAPI.Dtos.Note;
 using NotesAPI.Models;
+using NotesAPI.Repositories.NoteRepository;
 using NotesAPI.Services.UserService;
 
 namespace NotesAPI.Services.NoteService
 {
-    public class NoteService : INoteService
+	public class NoteService : INoteService
     {
-        private readonly DataContext _context;
         private readonly IMapper _mapper;
         private IUserService _userService;
+        private INoteRepository _noteRepository;
 
         public NoteService(
-            DataContext context,
             IMapper mapper,
-            IUserService userService)
+            IUserService userService,
+            INoteRepository noteRepository)
         {
-            _context = context;
             _mapper = mapper;
             _userService = userService;
+            _noteRepository = noteRepository;
         }
 
         public async Task<GetNoteDto> GetNoteById(int id)
 		{
-			var note = await _context.Notes
-                .Include(n => n.Creator)
-                .FirstOrDefaultAsync(n => n.Id == id);
+			var note = await _noteRepository.GetNoteByIdWithCreator(id);
 
             if (note == null)
             {
@@ -40,17 +37,15 @@ namespace NotesAPI.Services.NoteService
 
         public async Task<List<GetNoteForListDto>> GetAllNotes()
         {
-			var notes = await _context.Notes
-                .Include(n => n.Creator)
-                .Select(n => _mapper.Map<GetNoteForListDto>(n))
-                .ToListAsync();
+            var notes = await _noteRepository.GetAllNotes();
 
             if (notes == null)
             {
                 throw new Exception("Failed to load list of notes.");
             }
 
-			return notes;
+            var notesForList = notes.Select(n => _mapper.Map<GetNoteForListDto>(n)).ToList();
+			return notesForList;
         }
 
         public async Task<GetNoteDto> CreateNote(CreateNoteDto newNote)
@@ -60,8 +55,7 @@ namespace NotesAPI.Services.NoteService
             var currentUser = await _userService.GetCurrentUser();
             note.CreatorId = currentUser.Id;
 
-            _context.Notes.Add(note);
-            await _context.SaveChangesAsync();
+            await _noteRepository.CreateNote(note);
 
             var noteToReturn = _mapper.Map<GetNoteDto>(note);
             return noteToReturn;
@@ -69,7 +63,7 @@ namespace NotesAPI.Services.NoteService
 
         public async Task<GetNoteDto> UpdateNote(UpdateNoteDto editedNote)
         {
-            var note = await _context.Notes.FirstOrDefaultAsync(n => n.Id == editedNote.Id);
+            var note = await _noteRepository.GetNoteById(editedNote.Id);
 
 			if (note == null)
 			{
@@ -81,7 +75,7 @@ namespace NotesAPI.Services.NoteService
 			note.Title = editedNote.Title;
 			note.Content = editedNote.Content;
             
-			await _context.SaveChangesAsync();
+			await _noteRepository.UpdateNote();
 
 			var noteToReturn = _mapper.Map<GetNoteDto>(note);
             return noteToReturn;
@@ -89,7 +83,7 @@ namespace NotesAPI.Services.NoteService
 
         public async Task DeleteNote(int id)
         {
-            var note = await _context.Notes.FirstOrDefaultAsync(n => n.Id == id);
+            var note = await _noteRepository.GetNoteById(id);
 
             if (note == null)
 			{
@@ -98,8 +92,7 @@ namespace NotesAPI.Services.NoteService
 
             CheckUserIsCreator(note.CreatorId, id);
 
-            _context.Notes.Remove(note);
-			await _context.SaveChangesAsync();
+            await _noteRepository.DeleteNote(note);
         }
 
         public async void CheckUserIsCreator(int creatorId, int noteId)

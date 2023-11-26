@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NotesAPI.Data;
 using NotesAPI.Middleware;
+using NotesAPI.Repositories.NoteRepository;
+using NotesAPI.Repositories.UserRepository;
 using NotesAPI.Services.AuthService;
 using NotesAPI.Services.NoteService;
 using NotesAPI.Services.UserService;
@@ -42,6 +44,9 @@ namespace NotesAPI
 			builder.Services.AddScoped<IAuthService, AuthService>();
 			builder.Services.AddScoped<IUserService, UserService>();
 			builder.Services.AddScoped<INoteService, NoteService>();
+
+			builder.Services.AddScoped<IUserRepository, UserRepository>();
+			builder.Services.AddScoped<INoteRepository, NoteRepository>();
 
 			builder.Services.AddDbContext<DataContext>(options =>
 			{

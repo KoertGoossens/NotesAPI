@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NotesAPI.Dtos.User;
+using NotesAPI.Models;
 using NotesAPI.Services.AuthService;
 
 namespace NotesAPI.Controllers
@@ -16,7 +17,7 @@ namespace NotesAPI.Controllers
 		}
 
 		[HttpPost("register")]
-		public async Task<ActionResult<GetUserDto>> RegisterUser(CreateUserDto newUser)
+		public async Task<ActionResult<ServiceResponse<GetUserDto>>> RegisterUser(CreateUserDto newUser)
 		{
 			if (newUser.Username == null)
 			{
@@ -32,11 +33,15 @@ namespace NotesAPI.Controllers
 			}
 
 			var user = await _authService.RegisterUser(newUser);
-			return Ok(user);
+
+			var response = new ServiceResponse<GetUserDto>();
+			response.Data = user;
+
+			return Ok(response);
 		}
 
 		[HttpPost("login")]
-		public async Task<ActionResult<string>> LoginUser(LoginUserDto requestedUser)
+		public async Task<ActionResult<ServiceResponse<string>>> LoginUser(LoginUserDto requestedUser)
 		{
 			if (requestedUser.Username == null)
 			{
@@ -48,7 +53,11 @@ namespace NotesAPI.Controllers
 			}
 
 			string jwt = await _authService.LoginUser(requestedUser);
-			return Ok(jwt);
+
+			var response = new ServiceResponse<string>();
+			response.Data = jwt;
+
+			return Ok(response);
 		}
 	}
 }

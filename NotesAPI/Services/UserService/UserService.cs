@@ -1,26 +1,24 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using NotesAPI.Data;
 using NotesAPI.Dtos.User;
-using NotesAPI.Models;
+using NotesAPI.Repositories.UserRepository;
 using System.Security.Claims;
 
 namespace NotesAPI.Services.UserService
 {
-    public class UserService : IUserService
+	public class UserService : IUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly DataContext _context;
         private readonly IMapper _mapper;
+        private IUserRepository _userRepository;
 
         public UserService(
-            DataContext context,
             IHttpContextAccessor httpContextAccessor,
-            IMapper mapper)
+            IMapper mapper,
+            IUserRepository userRepository)
         {
             _httpContextAccessor = httpContextAccessor;
-            _context = context;
             _mapper = mapper;
+            _userRepository = userRepository;
         }
 
         public async Task<GetUserDto> GetCurrentUser()
@@ -32,7 +30,7 @@ namespace NotesAPI.Services.UserService
                 username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            var user = await _userRepository.GetUserByUsername(username);
 
             if (user == null)
             {

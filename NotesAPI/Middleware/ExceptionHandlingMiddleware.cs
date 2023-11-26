@@ -16,11 +16,9 @@ namespace NotesAPI.Middleware
 				context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 				context.Response.ContentType = "application/json";
 
-				var response = new
-				{
-					StatusCode = (int)HttpStatusCode.InternalServerError,
-					Message = ex.Message
-				};
+				var response = new ServiceResponse<object>();
+				response.StatusCode = (int)HttpStatusCode.InternalServerError;
+				response.Message = ex.Message;
 
 				string json = JsonSerializer.Serialize(response);
 				await context.Response.WriteAsync(json);

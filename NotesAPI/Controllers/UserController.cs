@@ -17,10 +17,14 @@ namespace NotesAPI.Controllers
 		}
 
 		[HttpGet, Authorize]
-		public async Task<ActionResult<GetUserDto>> GetCurrentUser()
+		public async Task<ActionResult<ServiceResponse<GetUserDto>>> GetCurrentUser()
 		{
 			var user = await _userService.GetCurrentUser();
-            return Ok(user);
+
+			var response = new ServiceResponse<GetUserDto>();
+			response.Data = user;
+
+            return Ok(response);
 		}
 	}
 }
