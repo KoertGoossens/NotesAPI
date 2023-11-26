@@ -1,10 +1,10 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NotesAPI.Dtos.Note;
-using NotesAPI.Dtos.User;
-using NotesAPI.Models;
-using NotesAPI.Services.NoteService;
+using Logic.Dtos.Note;
+using Logic.Dtos.User;
+using Data.Models;
+using Logic.Services.NoteService;
 
 namespace NotesAPI.Controllers
 {

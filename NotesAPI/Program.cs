@@ -2,15 +2,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using NotesAPI.Data;
+using Data;
 using NotesAPI.Middleware;
-using NotesAPI.Repositories.NoteRepository;
-using NotesAPI.Repositories.UserRepository;
-using NotesAPI.Services.AuthService;
-using NotesAPI.Services.NoteService;
-using NotesAPI.Services.UserService;
+using Data.Repositories.NoteRepository;
+using Data.Repositories.UserRepository;
+using Logic.Services.AuthService;
+using Logic.Services.NoteService;
+using Logic.Services.UserService;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using Logic;
 
 namespace NotesAPI
 {
@@ -39,7 +40,7 @@ namespace NotesAPI
 			});
 
 			builder.Services.AddHttpContextAccessor();
-			builder.Services.AddAutoMapper(typeof(Program).Assembly);
+			builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 			builder.Services.AddScoped<IAuthService, AuthService>();
 			builder.Services.AddScoped<IUserService, UserService>();

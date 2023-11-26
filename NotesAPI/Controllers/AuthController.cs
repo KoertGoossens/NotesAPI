@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NotesAPI.Dtos.User;
-using NotesAPI.Models;
-using NotesAPI.Services.AuthService;
+using Logic.Dtos.User;
+using Data.Models;
+using Logic.Services.AuthService;
 
 namespace NotesAPI.Controllers
 {
