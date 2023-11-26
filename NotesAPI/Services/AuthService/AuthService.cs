@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NotesAPI.Data;
-using NotesAPI.Dtos.Note;
 using NotesAPI.Dtos.User;
 using NotesAPI.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,7 +10,7 @@ using System.Text;
 
 namespace NotesAPI.Services.AuthService
 {
-    public class AuthService : IAuthService
+	public class AuthService : IAuthService
     {
         private readonly IConfiguration _configuration;
         private readonly DataContext _context;
@@ -50,14 +49,12 @@ namespace NotesAPI.Services.AuthService
 
             if (user == null)
             {
-                //return BadRequest("Wrong username or password.");
-                throw new Exception("test");
+                throw new Exception("Wrong username or password.");
             }
 
             if (!BCrypt.Net.BCrypt.Verify(requestedUser.Password, user.PasswordHash))
             {
-                //return BadRequest("Wrong username or password.");
-                throw new Exception("test");
+                throw new Exception("Wrong username or password.");
             }
 
             string jwt = CreateJwt(user);

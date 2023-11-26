@@ -29,6 +29,11 @@ namespace NotesAPI.Services.NoteService
                 .Include(n => n.Creator)
                 .FirstOrDefaultAsync(n => n.Id == id);
 
+            if (note == null)
+            {
+                throw new Exception($"Note with Id '{id}' not found.");
+            }
+
 			var noteToReturn = _mapper.Map<GetNoteDto>(note);
 			return noteToReturn;
 		}
@@ -39,6 +44,12 @@ namespace NotesAPI.Services.NoteService
                 .Include(n => n.Creator)
                 .Select(n => _mapper.Map<GetNoteForListDto>(n))
                 .ToListAsync();
+
+            if (notes == null)
+            {
+                throw new Exception("Failed to load list of notes.");
+            }
+
 			return notes;
         }
 

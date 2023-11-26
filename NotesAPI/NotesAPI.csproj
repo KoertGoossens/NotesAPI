@@ -25,4 +25,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\AuthRepository\" />
+    <Folder Include="Repositories\UserRepository\" />
+    <Folder Include="Repositories\NoteRepository\" />
+  </ItemGroup>
+
 </Project>

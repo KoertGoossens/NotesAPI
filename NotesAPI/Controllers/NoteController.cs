@@ -34,6 +34,15 @@ namespace NotesAPI.Controllers
 		[HttpPost("submit")]
 		public async Task<ActionResult<GetNoteDto>> CreateNote(CreateNoteDto newNote)
 		{
+			if (newNote.Title.Length == 0)
+			{
+				throw new Exception("Title cannot be empty.");
+			}
+			if (newNote.Content.Length == 0)
+			{
+				throw new Exception("Content cannot be empty.");
+			}
+
 			var note = await _noteService.CreateNote(newNote);
 			return Ok(note);
 		}
@@ -41,6 +50,15 @@ namespace NotesAPI.Controllers
 		[HttpPut("edit")]
 		public async Task<ActionResult<GetNoteDto>> UpdateNote(UpdateNoteDto editedNote)
 		{
+			if (editedNote.Title.Length == 0)
+			{
+				throw new Exception("Title cannot be empty.");
+			}
+			if (editedNote.Content.Length == 0)
+			{
+				throw new Exception("Content cannot be empty.");
+			}
+
 			var note = await _noteService.UpdateNote(editedNote);
 			return Ok(note);
 		}

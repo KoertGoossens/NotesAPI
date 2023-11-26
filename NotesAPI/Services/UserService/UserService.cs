@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NotesAPI.Data;
 using NotesAPI.Dtos.User;
+using NotesAPI.Models;
 using System.Security.Claims;
 
 namespace NotesAPI.Services.UserService
@@ -32,6 +33,12 @@ namespace NotesAPI.Services.UserService
             }
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null)
+            {
+                throw new Exception("Current user not found.");
+            }
+
             var userToReturn = _mapper.Map<GetUserDto>(user);
             return userToReturn;
         }

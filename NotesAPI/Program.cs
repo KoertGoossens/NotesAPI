@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NotesAPI.Data;
+using NotesAPI.Middleware;
 using NotesAPI.Services.AuthService;
 using NotesAPI.Services.NoteService;
 using NotesAPI.Services.UserService;
@@ -68,6 +69,8 @@ namespace NotesAPI
 				}));
 #endif
 
+			builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
@@ -82,6 +85,8 @@ namespace NotesAPI
 #endif
 
 			app.UseHttpsRedirection();
+
+			app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 			app.UseAuthorization();
 

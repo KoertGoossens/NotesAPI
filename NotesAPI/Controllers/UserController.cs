@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NotesAPI.Models;
+using NotesAPI.Dtos.User;
 using NotesAPI.Services.UserService;
 
 namespace NotesAPI.Controllers
@@ -17,7 +17,7 @@ namespace NotesAPI.Controllers
 		}
 
 		[HttpGet, Authorize]
-		public async Task<ActionResult<User>> GetCurrentUser()
+		public async Task<ActionResult<GetUserDto>> GetCurrentUser()
 		{
 			var user = await _userService.GetCurrentUser();
             return Ok(user);
