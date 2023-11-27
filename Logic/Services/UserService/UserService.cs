@@ -3,6 +3,8 @@ using Logic.Dtos.User;
 using Data.Repositories.UserRepository;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using Logic.Dtos.Note;
+using Data.Models;
 
 namespace Logic.Services.UserService
 {
@@ -40,6 +42,19 @@ namespace Logic.Services.UserService
 
             var userToReturn = _mapper.Map<GetUserDto>(user);
             return userToReturn;
+        }
+
+        public async Task<List<GetUserDto>> GetAllUsers()
+        {
+            var users = await _userRepository.GetAllUsers();
+
+            if (users == null)
+            {
+                throw new Exception("Failed to load list of users.");
+            }
+
+            var usersToReturn = users.Select(u => _mapper.Map<GetUserDto>(u)).ToList();
+			return usersToReturn;
         }
     }
 }

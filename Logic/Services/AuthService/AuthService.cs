@@ -38,6 +38,7 @@ namespace Logic.Services.AuthService
             var user = new User();
             user.Username = newUser.Username;
             user.Email = newUser.Email;
+            user.Role = "User";
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
             user.PasswordHash = passwordHash;
@@ -62,16 +63,16 @@ namespace Logic.Services.AuthService
                 throw new Exception("Wrong username or password.");
             }
 
-            string jwt = CreateJwt(user);
+            string jwt = CreateJwt(user, user.Role);
             return jwt;
         }
 
-        private string CreateJwt(User user)
+        private string CreateJwt(User user, string role)
         {
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, "User")
+                new Claim(ClaimTypes.Role, role)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value!));

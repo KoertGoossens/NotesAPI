@@ -21,6 +21,12 @@ namespace Data.Repositories.UserRepository
 			return user;
 		}
 
+		public async Task<List<User>> GetAllUsers()
+		{
+			var users = await _context.Users.ToListAsync();
+			return users;
+		}
+
 		public async Task<bool> CheckUsernameAvailable(string username)
 		{
 			bool isAvailable = await _context.Users.

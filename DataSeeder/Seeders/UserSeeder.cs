@@ -14,6 +14,7 @@ namespace DataSeeder.Seeders
                     Username = "hidde_deboer",
                     Email = "hiddedeboer@outlook.com",
                     PasswordHash = CreatePasswordHash("hiddewachtwoord"),
+                    Role = "User",
                     Notes = new List<Note>
                     {
                         new Note
@@ -24,7 +25,7 @@ namespace DataSeeder.Seeders
                         new Note
                         {
                             Title = "Tweede bericht van Hidde",
-                            Content = "Ik dacht, laat ik nog een tweede berichtje achterlaten."
+                            Content = "Laat ik nog een tweede berichtje achterlaten."
                         }
                     }
                 },
@@ -33,6 +34,7 @@ namespace DataSeeder.Seeders
                     Username = "milou_mulder",
                     Email = "miloumulder@hotmail.com",
                     PasswordHash = CreatePasswordHash("onveiligwachtwoord"),
+                    Role = "User",
                     Notes = new List<Note>
                     {
                         new Note
@@ -57,6 +59,7 @@ namespace DataSeeder.Seeders
                     Username = "jan_vanzanten",
                     Email = "janvanzanten@outlook.com",
                     PasswordHash = CreatePasswordHash("welkom123"),
+                    Role = "Admin",
                     Notes = new List<Note>
                     {
                         new Note
