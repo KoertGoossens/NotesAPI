@@ -9,7 +9,7 @@ namespace DataSeeder
     {
         private static async Task Main(string[] args)
         {
-            var dbConnectionString = "Server=(localdb)\\MSSQLLOCALDB;Database=NotesDB;Trusted_Connection=True;ConnectRetryCount=3";
+            var dbConnectionString = "server=localhost\\sqlexpress;database=NotesDB;trusted_connection=true;TrustServerCertificate=True;ConnectRetryCount=3";
             
             var serviceCollection = new ServiceCollection();
             
