@@ -17,11 +17,6 @@ namespace Data.Repositories.UserRepository
 			var user = await _context.Users
 				.FirstOrDefaultAsync(u => u.Username == username);
 
-			if (user == null)
-            {
-                throw new Exception($"User with username '{username}' not found.");
-            }
-
 			return user;
 		}
 
