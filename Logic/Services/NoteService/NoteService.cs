@@ -53,6 +53,12 @@ namespace Logic.Services.NoteService
             var note = _mapper.Map<Note>(newNote);
 
             var currentUser = await _userService.GetCurrentUser();
+
+            if (currentUser == null)
+            {
+                throw new Exception("Current user not found.");
+            }
+
             note.CreatorId = currentUser.Id;
 
             await _noteRepository.CreateNote(note);

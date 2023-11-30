@@ -17,6 +17,11 @@ namespace Data.Repositories.NoteRepository
 			var note = await _context.Notes
                 .FirstOrDefaultAsync(n => n.Id == id);
 
+            if (note == null)
+			{
+				throw new Exception($"Note with Id '{id}' not found.");
+			}
+
 			return note;
 		}
 
@@ -26,6 +31,11 @@ namespace Data.Repositories.NoteRepository
                 .Include(n => n.Creator)
                 .FirstOrDefaultAsync(n => n.Id == id);
 
+			if (note == null)
+			{
+				throw new Exception($"Note with Id '{id}' not found.");
+			}
+
 			return note;
 		}
 
@@ -34,6 +44,11 @@ namespace Data.Repositories.NoteRepository
 			var notes = await _context.Notes
                 .Include(n => n.Creator)
                 .ToListAsync();
+
+			if (notes == null)
+            {
+                throw new Exception("Failed to load list of notes.");
+            }
 
 			return notes;
 		}

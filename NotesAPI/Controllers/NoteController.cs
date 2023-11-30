@@ -1,9 +1,6 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Logic.Dtos.Note;
-using Logic.Dtos.User;
-using Data.Models;
 using Logic.Services.NoteService;
 
 namespace NotesAPI.Controllers
@@ -25,6 +22,11 @@ namespace NotesAPI.Controllers
 		{
 			var note = await _noteService.GetNoteById(id);
 
+			if (note == null)
+            {
+                throw new Exception($"Note with Id '{id}' not found.");
+            }
+
 			var response = new ServiceResponse<GetNoteDto>();
 			response.Data = note;
 
@@ -35,6 +37,11 @@ namespace NotesAPI.Controllers
 		public async Task<ActionResult<ServiceResponse<List<GetNoteForListDto>>>> GetAllNotes()
 		{
 			var notes = await _noteService.GetAllNotes();
+
+			if (notes == null)
+            {
+                throw new Exception("Failed to load list of notes.");
+            }
 
 			var response = new ServiceResponse<List<GetNoteForListDto>>();
 			response.Data = notes;
@@ -56,6 +63,11 @@ namespace NotesAPI.Controllers
 
 			var note = await _noteService.CreateNote(newNote);
 
+			if (note == null)
+            {
+                throw new Exception($"Failed to create note.");
+            }
+
 			var response = new ServiceResponse<GetNoteDto>();
 			response.Data = note;
 
@@ -75,6 +87,11 @@ namespace NotesAPI.Controllers
 			}
 
 			var note = await _noteService.UpdateNote(editedNote);
+
+			if (note == null)
+            {
+                throw new Exception($"Failed to update note.");
+            }
 
 			var response = new ServiceResponse<GetNoteDto>();
 			response.Data = note;

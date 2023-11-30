@@ -7,11 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotesAPI", "NotesAPI\NotesA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataSeeder", "DataSeeder\DataSeeder.csproj", "{6F7B9064-2449-41C2-A218-27B591C08476}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{53718753-13F9-4B47-A3FD-C42B94DBDF39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{53718753-13F9-4B47-A3FD-C42B94DBDF39}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{C81934D5-AD3D-4BC8-B1E3-305CB7F06D9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "Logic\Logic.csproj", "{2ADEB871-710E-44C4-9BAA-E677E35384BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logic", "Logic\Logic.csproj", "{2ADEB871-710E-44C4-9BAA-E677E35384BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotesAPITests", "NotesAPITests\NotesAPITests.csproj", "{9A65330E-DDD9-4787-9D84-F8E14ADAEC90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{2ADEB871-710E-44C4-9BAA-E677E35384BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ADEB871-710E-44C4-9BAA-E677E35384BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ADEB871-710E-44C4-9BAA-E677E35384BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A65330E-DDD9-4787-9D84-F8E14ADAEC90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A65330E-DDD9-4787-9D84-F8E14ADAEC90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A65330E-DDD9-4787-9D84-F8E14ADAEC90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A65330E-DDD9-4787-9D84-F8E14ADAEC90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

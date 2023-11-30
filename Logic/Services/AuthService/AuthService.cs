@@ -64,6 +64,12 @@ namespace Logic.Services.AuthService
             }
 
             string jwt = CreateJwt(user, user.Role);
+
+            if (jwt == null)
+            {
+                throw new Exception("Could not create JWT.");
+            }
+
             return jwt;
         }
 

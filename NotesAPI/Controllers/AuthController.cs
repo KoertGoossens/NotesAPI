@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Logic.Dtos.User;
-using Data.Models;
 using Logic.Services.AuthService;
+using Data.Models;
 
 namespace NotesAPI.Controllers
 {
@@ -34,6 +34,11 @@ namespace NotesAPI.Controllers
 
 			var user = await _authService.RegisterUser(newUser);
 
+			if (user == null)
+            {
+                throw new Exception("Failed to register user.");
+            }
+
 			var response = new ServiceResponse<GetUserDto>();
 			response.Data = user;
 
@@ -53,6 +58,11 @@ namespace NotesAPI.Controllers
 			}
 
 			string jwt = await _authService.LoginUser(requestedUser);
+
+			if (jwt == null)
+            {
+                throw new Exception("Failed to login user.");
+            }
 
 			var response = new ServiceResponse<string>();
 			response.Data = jwt;

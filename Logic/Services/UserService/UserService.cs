@@ -3,8 +3,6 @@ using Logic.Dtos.User;
 using Data.Repositories.UserRepository;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using Logic.Dtos.Note;
-using Data.Models;
 
 namespace Logic.Services.UserService
 {
