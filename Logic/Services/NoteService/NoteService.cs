@@ -60,6 +60,7 @@ namespace Logic.Services.NoteService
             }
 
             note.CreatorId = currentUser.Id;
+            note.TimeCreated = DateTime.Now;
 
             await _noteRepository.CreateNote(note);
 

@@ -9,12 +9,6 @@ namespace DataSeeder.Seeders
         {
             var Notes = new List<Note>
             {
-/*                new Note
-                {
-                    Title = "title1",
-                    Content = "content1",
-                    CreatorId = 1
-                },*/
             };
 
             await context.Notes.AddRangeAsync(Notes).ConfigureAwait(false);

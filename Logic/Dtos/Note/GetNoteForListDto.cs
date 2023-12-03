@@ -6,6 +6,7 @@ namespace Logic.Dtos.Note
 	{
 		public int Id { get; set; }
 		public string Title { get; set; } = string.Empty;
+		public DateTime TimeCreated { get; set; }
 
 		public int CreatorId { get; set; }
 		public GetUserDto Creator { get; set; }

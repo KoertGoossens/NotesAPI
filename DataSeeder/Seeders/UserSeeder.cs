@@ -15,17 +15,20 @@ namespace DataSeeder.Seeders
                     Email = "hiddedeboer@outlook.com",
                     PasswordHash = CreatePasswordHash("hiddewachtwoord"),
                     Role = "User",
+                    DateCreated = DateTime.Now,
                     Notes = new List<Note>
                     {
                         new Note
                         {
                             Title = "Bericht van Hidde",
-                            Content = "Hallo, ik ben Hidde en dit is mijn eerste bericht!"
+                            Content = "Hallo, ik ben Hidde en dit is mijn eerste bericht!",
+                            TimeCreated = DateTime.Now.AddDays(-6)
                         },
                         new Note
                         {
                             Title = "Tweede bericht van Hidde",
-                            Content = "Laat ik nog een tweede berichtje achterlaten."
+                            Content = "Laat ik nog een tweede berichtje achterlaten.",
+                            TimeCreated = DateTime.Now.AddDays(-5)
                         }
                     }
                 },
@@ -35,22 +38,26 @@ namespace DataSeeder.Seeders
                     Email = "miloumulder@hotmail.com",
                     PasswordHash = CreatePasswordHash("onveiligwachtwoord"),
                     Role = "User",
+                    DateCreated = DateTime.Now,
                     Notes = new List<Note>
                     {
                         new Note
                         {
                             Title = "Bericht van Milou",
-                            Content = "Ik ben Milou en dit is mijn eerste bericht!"
+                            Content = "Ik ben Milou en dit is mijn eerste bericht!",
+                            TimeCreated = DateTime.Now.AddDays(-4)
                         },
                         new Note
                         {
                             Title = "Jarig!",
-                            Content = "Morgen ben ik jarig! Daarom nodig ik Hidde en Jan morgen uit voor een feestje."
+                            Content = "Morgen ben ik jarig! Daarom nodig ik Hidde en Jan morgen uit voor een feestje.",
+                            TimeCreated = DateTime.Now.AddDays(-3)
                         },
                         new Note
                         {
                             Title = "Jammer",
-                            Content = "Jammer dat er niemand reageerde. Wat een saaie berichtendienst."
+                            Content = "Jammer dat er niemand reageerde. Wat een saaie berichtendienst.",
+                            TimeCreated = DateTime.Now.AddDays(-2)
                         }
                     }
                 },
@@ -60,12 +67,14 @@ namespace DataSeeder.Seeders
                     Email = "janvanzanten@outlook.com",
                     PasswordHash = CreatePasswordHash("welkom123"),
                     Role = "Admin",
+                    DateCreated = DateTime.Now,
                     Notes = new List<Note>
                     {
                         new Note
                         {
                             Title = "Hoi",
-                            Content = "Hoi, ik ben Jan en ik kom even kijken wat deze app voorstelt."
+                            Content = "Hoi, ik ben Jan en ik kom even kijken wat deze app voorstelt.",
+                            TimeCreated = DateTime.Now.AddHours(-8)
                         }
                     }
                 }

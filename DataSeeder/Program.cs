@@ -22,7 +22,7 @@ namespace DataSeeder
             await dataContext.Database.EnsureCreatedAsync();
 
             await UserSeeder.SeedUsers(dataContext).ConfigureAwait(false);
-            await NoteSeeder.SeedNotes(dataContext).ConfigureAwait(false);
+            //await NoteSeeder.SeedNotes(dataContext).ConfigureAwait(false);
 
             await dataContext.DisposeAsync();
         }

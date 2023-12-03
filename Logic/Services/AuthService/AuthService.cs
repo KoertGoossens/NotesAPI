@@ -39,6 +39,7 @@ namespace Logic.Services.AuthService
             user.Username = newUser.Username;
             user.Email = newUser.Email;
             user.Role = "User";
+            user.DateCreated = DateTime.Now;
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
             user.PasswordHash = passwordHash;
