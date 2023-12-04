@@ -13,6 +13,7 @@ using Logic.Services.UserService;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using Logic;
+using Serilog;
 
 namespace NotesAPI
 {
@@ -21,8 +22,6 @@ namespace NotesAPI
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
-
-			// Add services to the container.
 
 			builder.Services.AddControllers();
 			builder.Services.AddEndpointsApiExplorer();
@@ -78,9 +77,16 @@ namespace NotesAPI
 
 			builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
+			Log.Logger = new LoggerConfiguration()
+				.WriteTo.Console()
+				.WriteTo.File("logs/NotesAPILog-.txt", rollingInterval: RollingInterval.Day)
+				.CreateLogger();
+
 			var app = builder.Build();
 
-			// Configure the HTTP request pipeline.
+
+			// HTTP request pipeline
+
 			if (app.Environment.IsDevelopment())
 			{
 				app.UseSwagger();

@@ -17,6 +17,11 @@ namespace Data.Repositories.UserRepository
 			var user = await _context.Users
 				.FirstOrDefaultAsync(u => u.Username == username);
 
+			if (user == null)
+			{
+				throw new Exception($"User with username '{username}' not found.");
+			}
+
 			return user;
 		}
 
@@ -42,8 +47,15 @@ namespace Data.Repositories.UserRepository
 
 		public async Task CreateUser(User user)
 		{
-			await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+			try
+			{
+				await _context.Users.AddAsync(user);
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Failed to create user.");
+			}
 		}
 	}
 }

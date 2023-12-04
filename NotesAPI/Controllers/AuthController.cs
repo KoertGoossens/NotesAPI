@@ -2,6 +2,9 @@
 using Logic.Dtos.User;
 using Logic.Services.AuthService;
 using Data.Models;
+using Logic.Dtos.Note;
+using System.ComponentModel.DataAnnotations;
+using Serilog;
 
 namespace NotesAPI.Controllers
 {
@@ -19,17 +22,17 @@ namespace NotesAPI.Controllers
 		[HttpPost("register")]
 		public async Task<ActionResult<ServiceResponse<GetUserDto>>> RegisterUser(CreateUserDto newUser)
 		{
-			if (newUser.Username == null)
+			if (newUser.Username.Length < 3)
 			{
-				throw new Exception("Username cannot be empty.");
+				throw new Exception("Username must contain at least 3 characters.");
 			}
 			if (newUser.Email == null)
 			{
 				throw new Exception("Email cannot be empty.");
 			}
-			if (newUser.Password == null)
+			if (newUser.Password.Length < 8)
 			{
-				throw new Exception("Password cannot be empty.");
+				throw new Exception("Password must contain at least 8 characters.");
 			}
 
 			var user = await _authService.RegisterUser(newUser);
@@ -41,20 +44,19 @@ namespace NotesAPI.Controllers
 
 			var response = new ServiceResponse<GetUserDto>();
 			response.Data = user;
-
 			return Ok(response);
 		}
 
 		[HttpPost("login")]
 		public async Task<ActionResult<ServiceResponse<string>>> LoginUser(LoginUserDto requestedUser)
 		{
-			if (requestedUser.Username == null)
+			if (requestedUser.Username.Length < 3)
 			{
-				throw new Exception("Username cannot be empty.");
+				throw new Exception("Username must contain at least 3 characters.");
 			}
-			if (requestedUser.Password == null)
+			if (requestedUser.Password.Length < 8)
 			{
-				throw new Exception("Password cannot be empty.");
+				throw new Exception("Password must contain at least 8 characters.");
 			}
 
 			string jwt = await _authService.LoginUser(requestedUser);
@@ -66,7 +68,6 @@ namespace NotesAPI.Controllers
 
 			var response = new ServiceResponse<string>();
 			response.Data = jwt;
-
 			return Ok(response);
 		}
 	}

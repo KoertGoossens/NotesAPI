@@ -55,19 +55,40 @@ namespace Data.Repositories.NoteRepository
 
 		public async Task CreateNote(Note note)
 		{
-			await _context.Notes.AddAsync(note);
-            await _context.SaveChangesAsync();
+			try
+			{
+				await _context.Notes.AddAsync(note);
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Failed to create note.");
+			}
 		}
 
 		public async Task UpdateNote()
 		{
-			await _context.SaveChangesAsync();
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Failed to update note.");
+			}
 		}
 
 		public async Task DeleteNote(Note note)
 		{
-		    _context.Notes.Remove(note);
-			await _context.SaveChangesAsync();
+			try
+			{
+				_context.Notes.Remove(note);
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Failed to delete note.");
+			}
 		}
 	}
 }

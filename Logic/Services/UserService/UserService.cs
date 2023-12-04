@@ -24,20 +24,19 @@ namespace Logic.Services.UserService
 
         public async Task<GetUserDto> GetCurrentUser()
         {
-            var username = string.Empty;
-
-            if (_httpContextAccessor.HttpContext != null)
+            if (_httpContextAccessor.HttpContext == null)
             {
-                username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+                throw new Exception("HttpContext not found.");
+            }
+
+            var username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+
+            if (username == null)
+            {
+                throw new Exception("Username of current user not found.");
             }
 
             var user = await _userRepository.GetUserByUsername(username);
-
-            if (user == null)
-            {
-                throw new Exception("Current user not found.");
-            }
-
             var userToReturn = _mapper.Map<GetUserDto>(user);
             return userToReturn;
         }
@@ -45,12 +44,6 @@ namespace Logic.Services.UserService
         public async Task<List<GetUserDto>> GetAllUsers()
         {
             var users = await _userRepository.GetAllUsers();
-
-            if (users == null)
-            {
-                throw new Exception("Failed to load list of users.");
-            }
-
             var usersToReturn = users.Select(u => _mapper.Map<GetUserDto>(u)).ToList();
 			return usersToReturn;
         }

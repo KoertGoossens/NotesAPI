@@ -25,12 +25,6 @@ namespace Logic.Services.NoteService
         public async Task<GetNoteDto> GetNoteById(int id)
 		{
 			var note = await _noteRepository.GetNoteByIdWithCreator(id);
-
-            if (note == null)
-            {
-                throw new Exception($"Note with Id '{id}' not found.");
-            }
-
 			var noteToReturn = _mapper.Map<GetNoteDto>(note);
 			return noteToReturn;
 		}
@@ -38,12 +32,6 @@ namespace Logic.Services.NoteService
         public async Task<List<GetNoteForListDto>> GetAllNotes()
         {
             var notes = await _noteRepository.GetAllNotes();
-
-            if (notes == null)
-            {
-                throw new Exception("Failed to load list of notes.");
-            }
-
             var notesForList = notes.Select(n => _mapper.Map<GetNoteForListDto>(n)).ToList();
 			return notesForList;
         }
@@ -53,11 +41,6 @@ namespace Logic.Services.NoteService
             var note = _mapper.Map<Note>(newNote);
 
             var currentUser = await _userService.GetCurrentUser();
-
-            if (currentUser == null)
-            {
-                throw new Exception("Current user not found.");
-            }
 
             note.CreatorId = currentUser.Id;
             note.TimeCreated = DateTime.Now;
@@ -72,12 +55,7 @@ namespace Logic.Services.NoteService
         {
             var note = await _noteRepository.GetNoteById(editedNote.Id);
 
-			if (note == null)
-			{
-				throw new Exception($"Note with Id '{editedNote.Id}' not found.");
-			}
-
-            CheckUserIsCreator(note.CreatorId, editedNote.Id);
+            await CheckUserIsCreator(note.CreatorId, editedNote.Id);
 
 			note.Title = editedNote.Title;
 			note.Content = editedNote.Content;
@@ -92,17 +70,12 @@ namespace Logic.Services.NoteService
         {
             var note = await _noteRepository.GetNoteById(id);
 
-            if (note == null)
-			{
-				throw new Exception($"Note with Id '{id}' not found.");
-			}
-
-            CheckUserIsCreator(note.CreatorId, id);
+            await CheckUserIsCreator(note.CreatorId, id);
 
             await _noteRepository.DeleteNote(note);
         }
 
-        public async void CheckUserIsCreator(int creatorId, int noteId)
+        public async Task CheckUserIsCreator(int creatorId, int noteId)
         {
             var currentUser = await _userService.GetCurrentUser();
 
