@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Logic.Dtos.Note;
 using Logic.Services.NoteService;
+using NotesAPI.ExceptionHandling;
+using FluentValidation;
+using Logic.Dtos.User;
 
 namespace NotesAPI.Controllers
 {
@@ -11,10 +14,17 @@ namespace NotesAPI.Controllers
 	public class NoteController : ControllerBase
 	{
 		private INoteService _noteService;
+		private IValidator<CreateNoteDto> _createNoteDtoValidator;
+		private IValidator<UpdateNoteDto> _updateNoteDtoValidator;
 
-		public NoteController(INoteService noteService)
+		public NoteController(
+			INoteService noteService,
+			IValidator<CreateNoteDto> createNoteDtoValidator,
+			IValidator<UpdateNoteDto> updateNoteDtoValidator)
 		{
 			_noteService = noteService;
+			_createNoteDtoValidator = createNoteDtoValidator;
+			_updateNoteDtoValidator = updateNoteDtoValidator;
 		}
 
 		[HttpGet("{id}")]
@@ -38,13 +48,11 @@ namespace NotesAPI.Controllers
 		[HttpPost("submit")]
 		public async Task<ActionResult<ServiceResponse<GetNoteDto>>> CreateNote(CreateNoteDto newNote)
 		{
-			if (newNote.Title.Length == 0)
+			var result = await _createNoteDtoValidator.ValidateAsync(newNote);
+
+			if (!result.IsValid)
 			{
-				throw new Exception("Title cannot be empty.");
-			}
-			if (newNote.Content.Length == 0)
-			{
-				throw new Exception("Content cannot be empty.");
+				throw new ApiValidationException(result.Errors);
 			}
 
 			var note = await _noteService.CreateNote(newNote);
@@ -56,13 +64,11 @@ namespace NotesAPI.Controllers
 		[HttpPut("edit")]
 		public async Task<ActionResult<ServiceResponse<GetNoteDto>>> UpdateNote(UpdateNoteDto editedNote)
 		{
-			if (editedNote.Title.Length == 0)
+			var result = await _updateNoteDtoValidator.ValidateAsync(editedNote);
+
+			if (!result.IsValid)
 			{
-				throw new Exception("Title cannot be empty.");
-			}
-			if (editedNote.Content.Length == 0)
-			{
-				throw new Exception("Content cannot be empty.");
+				throw new ApiValidationException(result.Errors);
 			}
 
 			var note = await _noteService.UpdateNote(editedNote);

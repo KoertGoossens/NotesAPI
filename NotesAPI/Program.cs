@@ -14,6 +14,12 @@ using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using Logic;
 using Serilog;
+using FluentValidation;
+using System;
+using Logic.Dtos.User;
+using NotesAPI.Validation.User;
+using Logic.Dtos.Note;
+using NotesAPI.Validation.Note;
 
 namespace NotesAPI
 {
@@ -41,6 +47,11 @@ namespace NotesAPI
 
 			builder.Services.AddHttpContextAccessor();
 			builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+
+			builder.Services.AddScoped<IValidator<LoginUserDto>, LoginUserDtoValidator>();
+			builder.Services.AddScoped<IValidator<CreateUserDto>, CreateUserDtoValidator>();
+			builder.Services.AddScoped<IValidator<CreateNoteDto>, CreateNoteDtoValidator>();
+			builder.Services.AddScoped<IValidator<UpdateNoteDto>, UpdateNoteDtoValidator>();
 
 			builder.Services.AddScoped<IAuthService, AuthService>();
 			builder.Services.AddScoped<IUserService, UserService>();
@@ -79,7 +90,7 @@ namespace NotesAPI
 
 			Log.Logger = new LoggerConfiguration()
 				.WriteTo.Console()
-				.WriteTo.File("logs/NotesAPILog-.txt", rollingInterval: RollingInterval.Day)
+				.WriteTo.File("Logs/NotesAPILog-.txt", rollingInterval: RollingInterval.Day)
 				.CreateLogger();
 
 			var app = builder.Build();
@@ -99,11 +110,13 @@ namespace NotesAPI
 
 			app.UseHttpsRedirection();
 
-			app.UseMiddleware<ExceptionHandlingMiddleware>();
+			
 
 			app.UseAuthorization();
 
 			app.MapControllers();
+
+			app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 			app.Run();
 		}

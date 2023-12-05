@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Logic.Dtos.User;
 using Logic.Services.AuthService;
-using Data.Models;
-using Logic.Dtos.Note;
-using System.ComponentModel.DataAnnotations;
-using Serilog;
+using NotesAPI.Validation;
+using FluentValidation;
+using NotesAPI.ExceptionHandling;
 
 namespace NotesAPI.Controllers
 {
@@ -13,26 +12,27 @@ namespace NotesAPI.Controllers
 	public class AuthController : ControllerBase
 	{
 		private IAuthService _authService;
+		private IValidator<LoginUserDto> _loginUserDtoValidator;
+		private IValidator<CreateUserDto> _createUserDtoValidator;
 
-		public AuthController(IAuthService authService)
+		public AuthController(
+			IAuthService authService,
+			IValidator<LoginUserDto> loginUserDtoValidator,
+			IValidator<CreateUserDto> createUserDtoValidator)
 		{
 			_authService = authService;
+			_loginUserDtoValidator = loginUserDtoValidator;
+			_createUserDtoValidator = createUserDtoValidator;
 		}
 
 		[HttpPost("register")]
 		public async Task<ActionResult<ServiceResponse<GetUserDto>>> RegisterUser(CreateUserDto newUser)
 		{
-			if (newUser.Username.Length < 3)
+			var result = await _createUserDtoValidator.ValidateAsync(newUser);
+
+			if (!result.IsValid)
 			{
-				throw new Exception("Username must contain at least 3 characters.");
-			}
-			if (newUser.Email == null)
-			{
-				throw new Exception("Email cannot be empty.");
-			}
-			if (newUser.Password.Length < 8)
-			{
-				throw new Exception("Password must contain at least 8 characters.");
+				throw new ApiValidationException(result.Errors);
 			}
 
 			var user = await _authService.RegisterUser(newUser);
@@ -50,13 +50,11 @@ namespace NotesAPI.Controllers
 		[HttpPost("login")]
 		public async Task<ActionResult<ServiceResponse<string>>> LoginUser(LoginUserDto requestedUser)
 		{
-			if (requestedUser.Username.Length < 3)
+			var result = await _loginUserDtoValidator.ValidateAsync(requestedUser);
+
+			if (!result.IsValid)
 			{
-				throw new Exception("Username must contain at least 3 characters.");
-			}
-			if (requestedUser.Password.Length < 8)
-			{
-				throw new Exception("Password must contain at least 8 characters.");
+				throw new ApiValidationException(result.Errors);
 			}
 
 			string jwt = await _authService.LoginUser(requestedUser);
