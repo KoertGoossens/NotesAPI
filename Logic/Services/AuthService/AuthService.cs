@@ -7,6 +7,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using System.Security.Cryptography;
+using System.Linq;
 
 namespace Logic.Services.AuthService
 {
@@ -50,7 +52,7 @@ namespace Logic.Services.AuthService
             return userToReturn;
         }
 
-        public async Task<string> LoginUser(LoginUserDto requestedUser)
+        public async Task<LoginResult> LoginUser(LoginUserDto requestedUser)
         {
             var user = await _userRepository.GetUserByUsername(requestedUser.Username);
 
@@ -64,7 +66,67 @@ namespace Logic.Services.AuthService
                 throw new Exception("Wrong username or password.");
             }
 
-            string jwt = CreateJwt(user, user.Role);
+            var loginResult = await CreateTokens(user);
+            return loginResult;
+        }
+
+        public async Task<LoginResult> RefreshToken(string refreshToken)
+        {
+            var user = await _userRepository.GetUserByRefreshToken(refreshToken);
+
+			if (user.TokenExpires < DateTime.Now)
+			{
+				throw new Exception("Refresh token expired.");
+			}
+
+            var loginResult = await CreateTokens(user);
+            return loginResult;
+        }
+
+        public async Task RemoveRefreshToken(string refreshToken)
+        {
+            var user = await _userRepository.GetUserByRefreshToken(refreshToken);
+
+            user.RefreshToken = string.Empty;
+			user.TokenCreated = DateTime.MinValue;
+			user.TokenExpires = DateTime.MinValue;
+
+            await _userRepository.StoreRefreshToken();
+        }
+
+        private async Task<LoginResult> CreateTokens(User user)
+        {
+            var newRefreshToken = GenerateRefreshToken();
+            await StoreRefreshToken(user, newRefreshToken);
+
+            string jwt = CreateJwt(user);
+
+            var loginResult = new LoginResult {
+                accessToken = jwt,
+                refreshToken = newRefreshToken
+            };
+
+            return loginResult;
+        }
+
+        private string CreateJwt(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value!));
+
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: credentials);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             if (jwt == null)
             {
@@ -74,25 +136,24 @@ namespace Logic.Services.AuthService
             return jwt;
         }
 
-        private string CreateJwt(User user, string role)
+        private RefreshToken GenerateRefreshToken()
         {
-            List<Claim> claims = new List<Claim>
+            var refreshToken = new RefreshToken
             {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, role)
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.Now.AddDays(30)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value!));
+            return refreshToken;
+        }
 
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+        private async Task StoreRefreshToken(User user, RefreshToken refreshToken)
+        {
+            user.RefreshToken = refreshToken.Token;
+			user.TokenCreated = refreshToken.Created;
+			user.TokenExpires = refreshToken.Expires;
 
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: credentials);
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwt;
+            await _userRepository.StoreRefreshToken();
         }
     }
 }

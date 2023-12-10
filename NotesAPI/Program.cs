@@ -74,7 +74,8 @@ namespace NotesAPI
 						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
 							.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
 						ValidateIssuer = false,
-						ValidateAudience = false
+						ValidateAudience = false,
+						ClockSkew = TimeSpan.Zero		// set to 5 minutes by default
 					};
 				});
 
@@ -82,7 +83,10 @@ namespace NotesAPI
 			builder.Services.AddCors(options => options.AddPolicy(name: "AngularOrigins",
 				policy =>
 				{
-					policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+					policy.WithOrigins("http://localhost:4200")
+						.AllowAnyMethod()
+						.AllowAnyHeader()
+						.AllowCredentials();
 				}));
 #endif
 
@@ -109,8 +113,6 @@ namespace NotesAPI
 #endif
 
 			app.UseHttpsRedirection();
-
-			
 
 			app.UseAuthorization();
 

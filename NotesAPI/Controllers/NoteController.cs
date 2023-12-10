@@ -4,7 +4,6 @@ using Logic.Dtos.Note;
 using Logic.Services.NoteService;
 using NotesAPI.ExceptionHandling;
 using FluentValidation;
-using Logic.Dtos.User;
 
 namespace NotesAPI.Controllers
 {
@@ -31,6 +30,7 @@ namespace NotesAPI.Controllers
 		public async Task<ActionResult<ServiceResponse<GetNoteDto>>> GetNoteById(int id)
 		{
 			var note = await _noteService.GetNoteById(id);
+
 			var response = new ServiceResponse<GetNoteDto>();
 			response.Data = note;
 			return Ok(response);
@@ -40,6 +40,7 @@ namespace NotesAPI.Controllers
 		public async Task<ActionResult<ServiceResponse<List<GetNoteForListDto>>>> GetAllNotes()
 		{
 			var notes = await _noteService.GetAllNotes();
+
 			var response = new ServiceResponse<List<GetNoteForListDto>>();
 			response.Data = notes;
 			return Ok(response);
@@ -54,8 +55,9 @@ namespace NotesAPI.Controllers
 			{
 				throw new ApiValidationException(result.Errors);
 			}
-
+			
 			var note = await _noteService.CreateNote(newNote);
+
 			var response = new ServiceResponse<GetNoteDto>();
 			response.Data = note;
 			return Ok(response);
@@ -81,6 +83,7 @@ namespace NotesAPI.Controllers
 		public async Task<ActionResult<ServiceResponse<object>>> DeleteNote(int id)
 		{
 			await _noteService.DeleteNote(id);
+
 			var response = new ServiceResponse<object>();
 			return Ok(response);
 		}

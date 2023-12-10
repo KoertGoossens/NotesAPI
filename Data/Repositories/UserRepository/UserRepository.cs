@@ -57,5 +57,30 @@ namespace Data.Repositories.UserRepository
 				throw new Exception("Failed to create user.");
 			}
 		}
+
+		public async Task<User> GetUserByRefreshToken(string refreshToken)
+		{
+			var user = await _context.Users
+				.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+
+			if (user == null)
+			{
+				throw new Exception("Invalid refresh token.");
+			}
+
+			return user;
+		}
+
+		public async Task StoreRefreshToken()
+		{
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Failed to store refresh token.");
+			}
+		}
 	}
 }

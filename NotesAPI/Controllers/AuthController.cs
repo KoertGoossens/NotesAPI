@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Logic.Dtos.User;
 using Logic.Services.AuthService;
-using NotesAPI.Validation;
 using FluentValidation;
 using NotesAPI.ExceptionHandling;
+using Data.Models;
 
 namespace NotesAPI.Controllers
 {
@@ -57,16 +57,70 @@ namespace NotesAPI.Controllers
 				throw new ApiValidationException(result.Errors);
 			}
 
-			string jwt = await _authService.LoginUser(requestedUser);
+			var loginResult = await _authService.LoginUser(requestedUser);
 
-			if (jwt == null)
-            {
-                throw new Exception("Failed to login user.");
-            }
+			SetRefreshTokenCookie(loginResult.refreshToken);
 
 			var response = new ServiceResponse<string>();
-			response.Data = jwt;
+			response.Data = loginResult.accessToken;
 			return Ok(response);
+		}
+
+		[HttpPost("refreshtoken")]
+		public async Task<ActionResult<ServiceResponse<string>>> RefreshToken()
+		{
+			var refreshToken = Request.Cookies["refreshToken"];
+			
+			if (refreshToken == null)
+			{
+				throw new Exception("Refresh token not found.");
+			}
+
+			var loginResult = await _authService.RefreshToken(refreshToken);
+
+			SetRefreshTokenCookie(loginResult.refreshToken);
+
+			var response = new ServiceResponse<string>();
+			response.Data = loginResult.accessToken;
+			return Ok(response);
+		}
+
+		[HttpPost("logout")]
+		public async Task<ActionResult<ServiceResponse<object>>> LogoutUser()
+		{
+			var refreshToken = Request.Cookies["refreshToken"];
+			
+			if (refreshToken == null)
+			{
+				throw new Exception("Refresh token not found.");
+			}
+
+			var cookieOptions = new CookieOptions
+			{
+                HttpOnly = true,
+				Secure = true,
+				SameSite = SameSiteMode.None
+			};
+
+			Response.Cookies.Delete("refreshToken", cookieOptions);
+
+			await _authService.RemoveRefreshToken(refreshToken);
+
+			var response = new ServiceResponse<object>();
+			return Ok(response);
+		}
+
+		private void SetRefreshTokenCookie(RefreshToken refreshToken)
+		{
+			var cookieOptions = new CookieOptions
+			{
+                HttpOnly = true,
+                Expires = refreshToken.Expires,
+				Secure = true,
+				SameSite = SameSiteMode.None
+			};
+
+            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
 		}
 	}
 }

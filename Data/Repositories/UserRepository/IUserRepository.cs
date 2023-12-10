@@ -8,5 +8,7 @@ namespace Data.Repositories.UserRepository
 		Task<List<User>> GetAllUsers();
 		Task<bool> CheckUsernameAvailable(string username);
 		Task CreateUser(User user);
+		Task<User> GetUserByRefreshToken(string refreshToken);
+		Task StoreRefreshToken();
 	}
 }

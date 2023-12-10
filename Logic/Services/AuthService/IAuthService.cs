@@ -5,6 +5,8 @@ namespace Logic.Services.AuthService
     public interface IAuthService
     {
         Task<GetUserDto> RegisterUser(CreateUserDto newUser);
-        Task<string> LoginUser(LoginUserDto requestedUser);
+        Task<LoginResult> LoginUser(LoginUserDto requestedUser);
+        Task<LoginResult> RefreshToken(string refreshToken);
+        Task RemoveRefreshToken(string refreshToken);
     };
 }
