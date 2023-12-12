@@ -12,7 +12,7 @@ using Logic.ExceptionHandling;
 
 namespace Logic.Services.AuthService
 {
-	public class AuthService : IAuthService
+    public class AuthService : IAuthService
     {
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
@@ -123,7 +123,7 @@ namespace Logic.Services.AuthService
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddSeconds(10),       // AddHours(1)
+                expires: DateTime.Now.AddHours(1),
                 signingCredentials: credentials);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
@@ -141,7 +141,7 @@ namespace Logic.Services.AuthService
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.Now.AddSeconds(30)       // AddDays(30)
+                Expires = DateTime.Now.AddDays(30)
             };
 
             return refreshToken;
