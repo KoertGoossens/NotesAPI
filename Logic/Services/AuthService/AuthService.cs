@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
-using System.Linq;
+using Logic.ExceptionHandling;
 
 namespace Logic.Services.AuthService
 {
@@ -34,7 +34,7 @@ namespace Logic.Services.AuthService
 
             if (!usernameAvailable)
             {
-                throw new Exception("Username not available.");
+                throw new ApiConflictException("Username not available.");
             }
 
             var user = new User();
@@ -58,12 +58,12 @@ namespace Logic.Services.AuthService
 
             if (user == null)
             {
-                throw new Exception("Wrong username or password.");
+                throw new ApiInvalidUserException("Wrong username or password.");
             }
 
             if (!BCrypt.Net.BCrypt.Verify(requestedUser.Password, user.PasswordHash))
             {
-                throw new Exception("Wrong username or password.");
+                throw new ApiInvalidUserException("Wrong username or password.");
             }
 
             var loginResult = await CreateTokens(user);
@@ -123,7 +123,7 @@ namespace Logic.Services.AuthService
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddSeconds(10),       // AddHours(1)
                 signingCredentials: credentials);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
@@ -141,7 +141,7 @@ namespace Logic.Services.AuthService
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.Now.AddDays(30)
+                Expires = DateTime.Now.AddSeconds(30)       // AddDays(30)
             };
 
             return refreshToken;

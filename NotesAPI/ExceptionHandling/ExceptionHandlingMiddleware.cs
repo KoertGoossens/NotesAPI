@@ -1,4 +1,5 @@
-﻿using NotesAPI.ExceptionHandling;
+﻿using Logic.ExceptionHandling;
+using NotesAPI.ExceptionHandling;
 using Serilog;
 using System.Net;
 using System.Text.Json;
@@ -12,6 +13,27 @@ namespace NotesAPI.Middleware
 			try
 			{
 				await next(context);
+			}
+			catch (ApiConflictException ex)
+			{
+				await WriteHttpResponse(
+					context,
+					(int)HttpStatusCode.Conflict,
+					ex.ErrorMessage);
+			}
+			catch (ApiInvalidUserException ex)
+			{
+				await WriteHttpResponse(
+					context,
+					(int)HttpStatusCode.NotFound,
+					ex.ErrorMessage);
+			}
+			catch (RefreshTokenNotFoundException ex)
+			{
+				await WriteHttpResponse(
+					context,
+					(int)HttpStatusCode.NotFound,
+					ex.ErrorMessage);
 			}
 			catch (ApiValidationException ex)
 			{

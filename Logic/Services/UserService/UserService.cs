@@ -37,6 +37,12 @@ namespace Logic.Services.UserService
             }
 
             var user = await _userRepository.GetUserByUsername(username);
+
+            if (user == null)
+			{
+				throw new Exception($"User with username '{username}' not found.");
+			}
+
             var userToReturn = _mapper.Map<GetUserDto>(user);
             return userToReturn;
         }

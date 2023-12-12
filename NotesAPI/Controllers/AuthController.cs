@@ -14,7 +14,7 @@ namespace NotesAPI.Controllers
 		private IAuthService _authService;
 		private IValidator<LoginUserDto> _loginUserDtoValidator;
 		private IValidator<CreateUserDto> _createUserDtoValidator;
-
+		
 		public AuthController(
 			IAuthService authService,
 			IValidator<LoginUserDto> loginUserDtoValidator,
@@ -73,7 +73,7 @@ namespace NotesAPI.Controllers
 			
 			if (refreshToken == null)
 			{
-				throw new Exception("Refresh token not found.");
+				throw new RefreshTokenNotFoundException("Refresh token not found.");
 			}
 
 			var loginResult = await _authService.RefreshToken(refreshToken);
@@ -90,21 +90,19 @@ namespace NotesAPI.Controllers
 		{
 			var refreshToken = Request.Cookies["refreshToken"];
 			
-			if (refreshToken == null)
+			if (refreshToken != null)
 			{
-				throw new Exception("Refresh token not found.");
+				var cookieOptions = new CookieOptions
+				{
+					HttpOnly = true,
+					Secure = true,
+					SameSite = SameSiteMode.None
+				};
+
+				Response.Cookies.Delete("refreshToken", cookieOptions);
+
+				await _authService.RemoveRefreshToken(refreshToken);
 			}
-
-			var cookieOptions = new CookieOptions
-			{
-                HttpOnly = true,
-				Secure = true,
-				SameSite = SameSiteMode.None
-			};
-
-			Response.Cookies.Delete("refreshToken", cookieOptions);
-
-			await _authService.RemoveRefreshToken(refreshToken);
 
 			var response = new ServiceResponse<object>();
 			return Ok(response);

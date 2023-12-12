@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{C81934D5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logic", "Logic\Logic.csproj", "{2ADEB871-710E-44C4-9BAA-E677E35384BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotesAPITests", "NotesAPITests\NotesAPITests.csproj", "{9A65330E-DDD9-4787-9D84-F8E14ADAEC90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotesAPITests", "NotesAPITests\NotesAPITests.csproj", "{9A65330E-DDD9-4787-9D84-F8E14ADAEC90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
